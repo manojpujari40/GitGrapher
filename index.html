@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitGrapher</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="logo.jpg">
+</head>
+<body>
+    <div class="container">
+        <div class="intro text-center mt-5">
+            <img id="logo" src="logo.jpg" alt="offline">
+            <h1>GitGrapher</h1>
+            <p>Enter a GitHub username below to visualize their statistics:</p>
+            <input type="text" id="username" class="form-control mb-3" placeholder="Enter GitHub username">
+            <button onclick="fetchData()" class="btn btn-primary">Fetch Data</button>
+            <button onclick="downloadData()" class="btn btn-secondary ml-3">Download Data</button>
+        </div>
+        <div class="options mt-3 text-center">
+            <select id="theme-select" class="form-control w-25 d-inline-block">
+                <option value="light">Light Theme</option>
+                <option value="dark">Dark Theme</option>
+            </select>
+        </div>
+        <div class="chart-container mt-5">
+            <span class="chart-span">
+                <h3>Languages Used</h3>
+                <canvas id="languagesChart"></canvas>
+            </span>
+            <span class="chart-span">
+                <h3>Repo Stats</h3>
+                <canvas id="statsChart"></canvas>
+            </span>
+            <span class="chart-span">
+                <h3>Commits Per Repo</h3>
+                <canvas id="commitsChart"></canvas>
+            </span>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

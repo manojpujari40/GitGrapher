@@ -7,56 +7,46 @@ let statsChart;
 let commitsChart;
 
 async function fetchData() {
-    const username = usernameInput.value;
-    if (!username) {
-        alert('Please enter a GitHub username.');
-        return;
+  const username = usernameInput.value;
+  if (!username) {
+    alert('Please enter a GitHub username.');
+    return;
+  }
+
+  try {
+    const [reposResponse, followersResponse, followingResponse] = await Promise.all([
+      fetch(`https://api.github.com/users/${username}/repos`),
+      fetch(`https://api.github.com/users/${username}/followers`),
+      fetch(`https://api.github.com/users/${username}/following`)
+    ]);
+
+    const reposRateLimit = parseInt(reposResponse.headers.get('X-RateLimit-Remaining'));
+    const followersRateLimit = parseInt(followersResponse.headers.get('X-RateLimit-Remaining'));
+    const followingRateLimit = parseInt(followingResponse.headers.get('X-RateLimit-Remaining'));
+
+    if (reposRateLimit === 0 || followersRateLimit === 0 || followingRateLimit === 0) {
+      alert('GitHub API rate limit exceeded. Please try again later.');
+      return;
     }
 
-    try {
-        const reposResponse = await fetch(`https://api.github.com/users/${username}/repos`);
-
-        // Check rate limit header
-        const reposRateLimit = parseInt(reposResponse.headers.get('X-RateLimit-Remaining'));
-
-        if (reposRateLimit === 0) {
-            alert('GitHub API rate limit exceeded. Please try again later.');
-            return;
-        }
-
-        if (!reposResponse.ok) {
-            throw new Error(`Error fetching repositories: ${reposResponse.statusText}`);
-        }
-
-        const reposData = await reposResponse.json();
-
-        const languages = {};
-        let forks = 0, stars = 0, pullRequests = 0, issues = 0;
-        const commitsPerRepo = [];
-
-        for (const repo of reposData) {
-            forks += repo.forks_count;
-            stars += repo.stargazers_count;
-            if (repo.language) {
-                languages[repo.language] = (languages[repo.language] || 0) + 1;
-            }
-
-            const commitsResponse = await fetch(`https://api.github.com/repos/${username}/${repo.name}/commits`);
-            if (!commitsResponse.ok) {
-                throw new Error(`Error fetching commits for ${repo.name}: ${commitsResponse.statusText}`);
-            }
-            const commitsData = await commitsResponse.json();
-            commitsPerRepo.push({ repo: repo.name, commits: commitsData.length });
-        }
-
-        const stats = { forks, stars, pullRequests, issues };
-
-        renderCharts(languages, stats, commitsPerRepo);
-
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        alert(error.message);
+    if (!reposResponse.ok) {
+      throw new Error(`Error fetching repositories: ${reposResponse.statusText}`);
     }
+    if (!followersResponse.ok) {
+      throw new Error(`Error fetching followers: ${followersResponse.statusText}`);
+    }
+    if (!followingResponse.ok) {
+      throw new Error(`Error fetching following: ${followingResponse.statusText}`);
+    }
+
+    const reposData = await reposResponse.json();
+    const followersData = await followersResponse.json();
+    const followingData = await followingResponse.json();
+
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    alert(error.message);
+  }
 }
 
 function renderCharts(languages, stats, commitsPerRepo) {

@@ -15,8 +15,6 @@ async function fetchData() {
 
     try {
         const reposResponse = await fetch(`https://api.github.com/users/${username}/repos`);
-
-        // Check rate limit header
         const reposRateLimit = parseInt(reposResponse.headers.get('X-RateLimit-Remaining'));
 
         if (reposRateLimit === 0) {

@@ -140,31 +140,34 @@ function renderCharts(languages, stats, commitsPerRepo) {
     });
 }
 
-function downloadData() {
-    const username = usernameInput.value;
-    if (!username) {
-        alert('Please enter a GitHub username.');
-        return;
-    }
-
-    const data = {
-        username,
-        languages: languagesChart.data.datasets[0].data,
-        stats: statsChart.data.datasets[0].data,
-        commitsPerRepo: commitsChart.data.datasets[0].data
-    };
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${username}_data.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
 themeSelect.addEventListener('change', function () {
     currentTheme = themeSelect.value;
     document.body.className = currentTheme === 'dark' ? 'dark-theme' : '';
 });
+
+function downloadChart(chart, filename) {
+  const url = chart.toBase64Image();
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${filename}.png`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function renderCharts(languages, stats, commitsPerRepo) {
+  const languagesDownloadBtn = document.getElementById('languagesDownloadBtn');
+  languagesDownloadBtn.addEventListener('click', () => {
+    downloadChart(languagesChart, 'languages_chart');
+  });
+
+  const statsDownloadBtn = document.getElementById('statsDownloadBtn');
+  statsDownloadBtn.addEventListener('click', () => {
+    downloadChart(statsChart, 'stats_chart');
+  });
+
+  const commitsDownloadBtn = document.getElementById('commitsDownloadBtn');
+  commitsDownloadBtn.addEventListener('click', () => {
+    downloadChart(commitsChart, 'commits_chart');
+  });
+}

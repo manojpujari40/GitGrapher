@@ -6,7 +6,7 @@
 Generate stats for your profile.
 
 > [!IMPORTANT]
-> This website create a chart using chart.js and also using github api. The github api has limit, when it touch the limit it will not create chart.
+> This website create a chart using chart.js and also using github api. The github api has limit, when it touch the limit it will not create chart. Today it touched the limit. 
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/Harshit2012/GitGrapher?tab=MIT-1-ov-file#readme)
 ![GitHub Release](https://img.shields.io/github/v/release/harshit2012/GitGrapher)
